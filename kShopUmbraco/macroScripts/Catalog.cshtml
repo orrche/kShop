@@ -1,0 +1,20 @@
+﻿@using kShop; 
+@using kShopUmbraco;
+@using umbraco.NodeFactory;
+
+
+@{
+	Catalog catalog = new Catalog(new CatalogManagerUmbraco(@Model.Id));	
+	
+	
+	<h1>@catalog.title</h1>;
+	
+	if ( catalog.categories.Count > 0 )
+	{
+		<h2>Categories</h2>
+		foreach ( Category child in catalog.categories )
+		{
+			<a href="@CategoryManagerUmbraco.getFrom(child).getNode().NiceUrl">@child.title</a><br />
+		}
+	}
+}

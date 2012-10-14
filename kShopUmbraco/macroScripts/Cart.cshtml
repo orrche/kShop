@@ -1,0 +1,44 @@
+﻿
+@using kShop;
+@using kShopUmbraco;
+	
+<h3>Din kundvagn</h3>
+@{		
+	Cart cart = new Cart(new CartManagerUmbraco());
+	
+	<form method="post">
+	<table>
+		<tr>
+			<td>Artikel</td><td>Antal</td><td>á-pris</td><td></td>
+		</tr>
+		@foreach ( CartedProduct child in cart.products ) 
+		{
+			<tr>
+				<td>
+					<a href="@ProductManagerUmbraco.getFrom(child.product).getNode().NiceUrl">@child.product.title</a>
+				</td>
+				<td>
+					<input name="@("quantity_" + child.product.id)" value="@child.quantity" />
+				</td>
+				<td>
+					@child.product.price
+				</td>
+				<td>
+					@(child.product.price * child.quantity)
+				</td>
+			</tr>
+		}
+		<tr>
+			<td></td><td></td><td>Summa:</td><td>@cart.getSum() </td>
+		</tr>
+	</table>
+
+	<input type="submit" value="Update" name="updateCart" />
+	</form>
+	<form method="post">
+		<input type="submit" value="Order" name="Order" />
+	</form>
+	<form method="post">
+		<input type="submit" value="clearCart" name="clearCart" />
+	</form>
+}

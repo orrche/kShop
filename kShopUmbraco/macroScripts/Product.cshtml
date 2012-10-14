@@ -1,0 +1,43 @@
+﻿@using kShop; 
+@using kShopUmbraco;
+@using umbraco.NodeFactory;
+
+
+@{
+	<a href="@((new Node(@Model.Up().Id)).NiceUrl)">Up</a> <a href="@((new Node(@Model.Id)).NiceUrl)">Reload</a>
+	Cart cart = new Cart(new CartManagerUmbraco());
+	
+	Product product = new Product(new ProductManagerUmbraco(@Model.Id));	
+	
+	
+	if ( HttpContext.Current.Request.Form["addProduct"] != null ) 
+	{
+		cart.addProduct(product);
+		CartManagerUmbraco.getFrom(cart).save(cart);
+	}
+	
+	<h1>@product.title</h1>;
+	
+	foreach ( Product child in product.products ) 
+	{
+		<a href="@ProductManagerUmbraco.getFrom(child).getNode().NiceUrl">@child.title</a><br />
+	}
+	
+	if ( product.products.Count == 0 )
+	{
+		@Html.Raw("&nbsp;");
+	}
+	<form method="post">
+		<input type="submit" name="addProduct" value="addProduct" />
+	</form>
+		
+	
+	if( product.products.Count > 0 )
+	{
+		<h2>Products</h2>
+		foreach ( Product child in product.products ) 
+		{
+			<a href="@ProductManagerUmbraco.getFrom(child).getNode().NiceUrl">@child.title</a><br />
+		}
+	}
+}

@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A4C38C27-6434-4E76-92F6-A805CE866497}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>kShopUmbraco</RootNamespace>
+    <AssemblyName>kShopUmbraco</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="businesslogic">
+      <HintPath>..\foreignDlls\businesslogic.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="cms">
+      <HintPath>..\foreignDlls\cms.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="interfaces">
+      <HintPath>..\foreignDlls\interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="umbraco">
+      <HintPath>..\foreignDlls\umbraco.dll</HintPath>
+    </Reference>
+    <Reference Include="Umbraco.Core">
+      <HintPath>..\foreignDlls\Umbraco.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CartManagerUmbraco.cs" />
+    <Compile Include="CatalogManagerUmbraco.cs" />
+    <Compile Include="CategoryManagerUmbraco.cs" />
+    <Compile Include="ProductManagerUmbraco.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\kShop\kShop.csproj">
+      <Project>{588510f7-2164-4dbe-b9a8-9cb98a3276b9}</Project>
+      <Name>kShop</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="installscript\installer.bat" />
+    <None Include="installscript\installer_template.bat" />
+    <None Include="installscript\settings.bat" />
+    <None Include="macroScripts\Catalog.cshtml" />
+    <None Include="macroScripts\Category.cshtml" />
+    <None Include="macroScripts\Product.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="macroScripts\Cart.cshtml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>"$(ProjectDir)installscript\installer.bat" "$(ProjectDir)" "$(ProjectDir)"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

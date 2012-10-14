@@ -1,0 +1,27 @@
+﻿@using kShop; 
+@using kShopUmbraco;
+@using umbraco.NodeFactory;
+
+
+@{
+	<a href="@((new Node(@Model.Up().Id)).NiceUrl)">Up</a>
+	Category category = new Category(new CategoryManagerUmbraco(@Model.Id));	
+	
+	
+	<h1>@category.title</h1>;
+	
+	if ( category.categories.Count > 0 )
+	{
+		<h2>Categories</h2>
+		foreach ( Category child in category.categories )
+		{
+			<a href="@CategoryManagerUmbraco.getFrom(child).getNode().NiceUrl">@child.title</a><br />
+		}
+	}
+	
+	<h2>Products</h2>
+	foreach ( Product product in category.products ) 
+	{
+		<a href="@ProductManagerUmbraco.getFrom(product).getNode().NiceUrl">@product.title</a><br />
+	}
+}
