@@ -9,6 +9,7 @@ using kShop;
 using umbraco.businesslogic;
 using umbraco.cms.businesslogic.web;
 using umbraco.NodeFactory;
+using System.Web;
 
 
 namespace kShopUmbraco
@@ -40,6 +41,8 @@ namespace kShopUmbraco
                     catalog.categories.Add(new Category(new CategoryManagerUmbraco(child.Id)));
                 }
             }
+
+            catalog.pathToPaymentProviders = System.IO.Path.Combine(HttpContext.Current.Server.MapPath("/"), "paymentProviders");
         }
 
         /// <summary>

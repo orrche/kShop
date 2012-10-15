@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +11,7 @@ namespace kShop
     public class Catalog
     {
         string _title;
+        string _pathToPaymentProviders = null;
         List<CatalogManager> _managers = new List<CatalogManager>();
         bool filled = false;
         List<Category> _categories = new List<Category>();
@@ -54,6 +57,19 @@ namespace kShop
             }
         }
 
+        public string pathToPaymentProviders
+        {
+            get
+            {
+                fill();
+                return _pathToPaymentProviders;
+            }
+            set
+            {
+                _pathToPaymentProviders = value;
+            }
+        }
+
         public CatalogManager getManager(Type type)
         {
             foreach (CatalogManager manager in _managers)
@@ -65,6 +81,35 @@ namespace kShop
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Returns a list of all available providers, not only the enabled ones.
+        /// </summary>
+        /// <returns></returns>
+        public List<PaymentProvider> getAvailablePaymentProviders()
+        {
+            List<PaymentProvider> ret = new List<PaymentProvider>();
+
+            foreach ( Assembly assembly in AppDomain.CurrentDomain.GetAssemblies() )
+            {
+                foreach( Type type in assembly.GetTypes() )
+                {
+                    foreach( Type inter in type.GetInterfaces())
+                    {
+                        if (inter == (typeof(PaymentProvider)))
+                        {
+                            PaymentProvider paymentProvider = (PaymentProvider)Activator.CreateInstance(type);
+                            if (paymentProvider.list())
+                            {
+                                ret.Add(paymentProvider);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return ret;
         }
     }
 }

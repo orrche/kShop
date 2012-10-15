@@ -65,6 +65,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\dommyPaymentHandler\dummyPaymentHandler.csproj">
+      <Project>{f36e05d3-1352-4006-8a53-01c4b268a935}</Project>
+      <Name>dummyPaymentHandler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\kShop\kShop.csproj">
       <Project>{588510f7-2164-4dbe-b9a8-9cb98a3276b9}</Project>
       <Name>kShop</Name>

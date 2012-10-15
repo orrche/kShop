@@ -1,10 +1,63 @@
 ﻿
 @using kShop;
 @using kShopUmbraco;
+@using System.IO;
 	
+@using System.Reflection;
+
+
 <h3>Din kundvagn</h3>
 @{		
 	Cart cart = new Cart(new CartManagerUmbraco());
+    
+    if (HttpContext.Current.Request.Form["Order"] != null)
+    {
+        PaymentProvider paymentProvider = null;
+        Assembly test1 = Assembly.LoadFrom(@"C:\inetpub\wwwroot\someshop\bin\dommyPaymentHandler.dll");
+    
+        foreach( Type type in test1.GetTypes() )
+        {
+            foreach( Type inter in type.GetInterfaces())
+            {
+                if (inter == (typeof(PaymentProvider)))
+                {
+                    paymentProvider = (PaymentProvider) Activator.CreateInstance(type);
+                }
+            }
+        }
+        
+        
+        if ( paymentProvider != null )
+        {
+            <span>Name of provider: @paymentProvider.getName()</span>
+        }
+    }
+            
+    
+    if (HttpContext.Current.Request.Form["Order"] != null)
+    {
+        PaymentProvider paymentProvider = null;
+        Assembly test1 = Assembly.LoadFrom(@"C:\inetpub\wwwroot\someshop\bin\dommyPaymentHandler.dll");
+    
+        foreach( Type type in test1.GetTypes() )
+        {
+            foreach( Type inter in type.GetInterfaces())
+            {
+                if (inter == (typeof(PaymentProvider)))
+                {
+                    paymentProvider = (PaymentProvider) Activator.CreateInstance(type);
+                }
+            }
+        }
+        
+        
+        if ( paymentProvider != null )
+        {
+            <span>Name of provider: @paymentProvider.getName()</span>
+        }
+    }
+            
+    
 	
 	<form method="post">
 	<table>
