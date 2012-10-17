@@ -13,6 +13,11 @@ namespace dummyPaymentHandler
     /// </summary>
     class SecondPaymentProvider : Class1
     {
+        public SecondPaymentProvider(PaymentController controller) : base(controller)
+        {
+            
+        }
+
         public override string getName()
         {
             return "DUMMY3";

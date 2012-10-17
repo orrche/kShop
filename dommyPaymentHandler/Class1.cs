@@ -4,12 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Web;
+
 using kShop;
 
 namespace dummyPaymentHandler
 {
     public class Class1 : kShop.PaymentProvider
     {
+        PaymentController _controller;
+
+        public Class1(PaymentController controller)
+        {
+            _controller = controller;
+        }
+
+
         public virtual string getName()
         {
             return "DUMMY";
@@ -20,9 +30,28 @@ namespace dummyPaymentHandler
             return true;
         }
 
-        public string createPaymentRequest(Cart cart)
+        public PaymentRequest createPaymentRequest(Cart cart)
         {
-            return "Payment Request";
+            PaymentRequest paymentRequest = new PaymentRequest();
+
+
+            paymentRequest.destination = "http://minoris.se/www/paytest.php";
+
+            paymentRequest.setParameter("accepturl", _controller.respondUrl + "?resp=accept");
+            paymentRequest.setParameter("cancelurl", _controller.respondUrl + "?resp=cancel");
+
+            paymentRequest.renderMethod = PaymentRequestRenderMethods.Post;
+
+            return paymentRequest;
+        }
+
+        public bool responseHandler(HttpContext context, Cart cart)
+        {
+            if (context.Request.Params["resp"] == "accept")
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
