@@ -1,0 +1,47 @@
+﻿
+@using kShop;
+@using kShopUmbraco;
+@using System.IO;
+	
+@using System.Reflection;
+@using umbraco.MacroEngines;
+
+<h1>Processing your order, for the fun of it</h1>
+@{		
+	Cart cart = new Cart(new CartManagerUmbraco());
+    Catalog catalog = kShopUmbraco.Helper.getCatalog();
+
+    if (HttpContext.Current.Request.Form["Order"] != null)
+    {
+		foreach ( PaymentController paymentController in catalog.getEnabledPaymentControllers() )
+		{
+			if ( paymentController.id == HttpContext.Current.Request.Form["paymentProvider"] )
+			{
+				<span>Selected provider: @paymentController.paymentProvider.getName()</span>
+				cart.paymentController = paymentController;
+				CartManagerUmbraco.getFrom(cart).save();
+			}
+		}
+    }
+    
+	if ( cart.paymentController != null )
+	{
+		PaymentRequest paymentRequest = cart.paymentController.paymentProvider.createPaymentRequest(cart);
+
+		if ( paymentRequest.renderMethod == PaymentRequestRenderMethods.Post ) 
+		{
+			<form method="post" action="@paymentRequest.destination">
+				@foreach ( string key in paymentRequest.parameters.Keys )
+				{
+					<input name="@key" value="@paymentRequest.parameters[key]" />
+				}
+
+				<input type="submit" />
+			</form>
+		}
+	}
+	else
+	{
+		<span>We dont really know how you got here...</span>
+	}
+}

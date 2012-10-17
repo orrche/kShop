@@ -4,12 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Web;
+
 namespace kShop
 {
     public interface PaymentProvider
     {
         string getName();
-        string createPaymentRequest(Cart cart);
+        PaymentRequest createPaymentRequest(Cart cart);
+        bool responseHandler(HttpContext context, Cart cart);
         bool list();
     }
 }

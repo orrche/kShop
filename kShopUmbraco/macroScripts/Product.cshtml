@@ -1,4 +1,4 @@
-﻿@using kShop; 
+﻿@using kShop;
 @using kShopUmbraco;
 @using umbraco.NodeFactory;
 
@@ -13,7 +13,7 @@
 	if ( HttpContext.Current.Request.Form["addProduct"] != null ) 
 	{
 		cart.addProduct(product);
-		CartManagerUmbraco.getFrom(cart).save(cart);
+		CartManagerUmbraco.getFrom(cart).save();
 	}
 	
 	<h1>@product.title</h1>;

@@ -11,11 +11,10 @@ namespace kShop
     public class Catalog
     {
         string _title;
-        string _pathToPaymentProviders = null;
         List<CatalogManager> _managers = new List<CatalogManager>();
         bool filled = false;
         List<Category> _categories = new List<Category>();
-
+        List<PaymentController> _paymentHandlerControllers = new List<PaymentController>();
 
 
         public Catalog(CatalogManager manager)
@@ -57,19 +56,6 @@ namespace kShop
             }
         }
 
-        public string pathToPaymentProviders
-        {
-            get
-            {
-                fill();
-                return _pathToPaymentProviders;
-            }
-            set
-            {
-                _pathToPaymentProviders = value;
-            }
-        }
-
         public CatalogManager getManager(Type type)
         {
             foreach (CatalogManager manager in _managers)
@@ -83,6 +69,62 @@ namespace kShop
             return null;
         }
 
+        public List<PaymentController> paymentHandlerControllers
+        {
+            get
+            {
+                fill();
+                return _paymentHandlerControllers;
+            }
+        }
+
+        public List<PaymentController> getEnabledPaymentControllers()
+        {
+            fill();
+            List<PaymentController> ret = new List<PaymentController>();
+
+            foreach (PaymentController controller in paymentHandlerControllers)
+            {
+                if (controller.paymentProvider != null)
+                {
+                    if (controller.paymentProvider.list())
+                    {
+                        ret.Add(controller);
+                    }
+                    continue;
+                }
+                foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+                {
+
+                    if (assembly.IsDynamic == false && controller.dll != null && assembly.Location.EndsWith(controller.dll))
+                    {
+                        foreach (Type type in assembly.GetTypes())
+                        {
+                            if (type.Namespace == controller.pluginNamespace && type.Name == controller.pluginClass)
+                            {
+                                foreach (Type inter in type.GetInterfaces())
+                                {
+                                    if (inter == (typeof(PaymentProvider)))
+                                    {
+                                        PaymentProvider paymentProvider = (PaymentProvider)Activator.CreateInstance(type, new object[] { controller });
+                                        if (paymentProvider.list())
+                                        {
+                                            controller.paymentProvider = paymentProvider;
+                                            ret.Add(controller);
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return ret;
+
+        }
+
         /// <summary>
         /// Returns a list of all available providers, not only the enabled ones.
         /// </summary>
@@ -90,15 +132,17 @@ namespace kShop
         public List<PaymentProvider> getAvailablePaymentProviders()
         {
             List<PaymentProvider> ret = new List<PaymentProvider>();
-
+            
             foreach ( Assembly assembly in AppDomain.CurrentDomain.GetAssemblies() )
             {
+                
                 foreach( Type type in assembly.GetTypes() )
                 {
                     foreach( Type inter in type.GetInterfaces())
                     {
                         if (inter == (typeof(PaymentProvider)))
                         {
+                            
                             PaymentProvider paymentProvider = (PaymentProvider)Activator.CreateInstance(type);
                             if (paymentProvider.list())
                             {
@@ -106,6 +150,9 @@ namespace kShop
                             }
                         }
                     }
+
+                    
+                   // ((PaymentProvider)Activator.CreateInstance(Type.GetType("dummyPaymentHandler.Class1"))).getName();
                 }
             }
 

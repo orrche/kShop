@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,7 +47,10 @@
     <Compile Include="CatalogManager.cs" />
     <Compile Include="Category.cs" />
     <Compile Include="CategoryManager.cs" />
+    <Compile Include="PaymentController.cs" />
+    <Compile Include="PaymentControllerManager.cs" />
     <Compile Include="PaymentProvider.cs" />
+    <Compile Include="PaymentRequest.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="ProductManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

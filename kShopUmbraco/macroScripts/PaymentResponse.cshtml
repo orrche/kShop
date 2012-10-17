@@ -1,0 +1,28 @@
+﻿
+@using kShop;
+@using kShopUmbraco;
+@using System.IO;
+	
+@using System.Reflection;
+@using umbraco.MacroEngines;
+
+<h1>Processing your order, for the fun of it</h1>
+@{		
+	Cart cart = new Cart(new CartManagerUmbraco());
+    Catalog catalog = kShopUmbraco.Helper.getCatalog();
+	CartManagerUmbraco.getFrom(cart).HandleResponse();
+
+	if ( cart.status == Cart.Status.paid )
+	{
+		<h2>Your order has been paid</h2>
+
+		CartManagerUmbraco.Clear();
+	}
+	else
+	{
+		<h2>Your payment didn't go through, you are free to try again.</h2>
+		cart.status = Cart.Status.incompleat;
+		
+		CartManagerUmbraco.getFrom(cart).save();
+	}
+}

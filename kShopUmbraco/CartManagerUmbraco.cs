@@ -18,6 +18,7 @@ namespace kShopUmbraco
     public class CartManagerUmbraco : CartManager
     {
         Node _node = null;
+        Cart _cart = null;
 
         public CartManagerUmbraco()
         {
@@ -38,10 +39,20 @@ namespace kShopUmbraco
                     HttpContext.Current.Items["kShopCart"] = _node;
                 }
             }
-
-
         }
-        public static void UpdateCart(Cart cart)
+
+        public void HandleResponse()
+        {
+            if (_cart.paymentController.paymentProvider.responseHandler(HttpContext.Current, _cart))
+            {
+                _cart.status = Cart.Status.paid;
+
+
+                save();
+            }
+        }
+
+        public void UpdateCart()
         {
             if (HttpContext.Current.Request.Form["updateCart"] != null)
             {
@@ -49,10 +60,10 @@ namespace kShopUmbraco
                 {
                     if (key.StartsWith("quantity_"))
                     {
-                        cart.setQuantity(key.Substring(9), Convert.ToInt32(HttpContext.Current.Request.Form[key]));
+                        _cart.setQuantity(key.Substring(9), Convert.ToInt32(HttpContext.Current.Request.Form[key]));
                     }
                 }
-                CartManagerUmbraco.getFrom(cart).save(cart);
+                CartManagerUmbraco.getFrom(_cart).save();
             }
 
         }
@@ -64,7 +75,7 @@ namespace kShopUmbraco
             HttpContext.Current.Items["kShopCart"] = null;
         }
 
-        public void save(Cart cart)
+        public void save()
         {
             
             User user = User.GetUser(0);
@@ -87,7 +98,7 @@ namespace kShopUmbraco
 
             string productIds = "";
             bool first = true;
-            foreach (CartedProduct cProduct in cart.products)
+            foreach (CartedProduct cProduct in _cart.products)
             {
                 if (!first)
                 {
@@ -98,6 +109,14 @@ namespace kShopUmbraco
             }
 
             _doc.getProperty("storedProducts").Value = productIds;
+            if (_cart.paymentController != null && _doc.getProperty("paymentControllerId") != null )
+            {
+                _doc.getProperty("paymentControllerId").Value = _cart.paymentController.id;
+            }
+            if (_doc.getProperty("status") != null)
+            {
+                _doc.getProperty("status").Value = _cart.status.ToString();
+            }
             _doc.SendToPublication(user);
             _doc.Publish(user);
            
@@ -111,6 +130,7 @@ namespace kShopUmbraco
 
         public void fill(Cart cart)
         {
+            _cart = cart;
             if (_node == null)
             {
                 // We got nothing to fill from...
@@ -139,6 +159,31 @@ namespace kShopUmbraco
                     if (Int32.TryParse(id, out productId))
                     {
                         cart.addProduct(new Product(new ProductManagerUmbraco(productId)), quantity);
+                    }
+                }
+            }
+
+            if (_node.GetProperty("paymentControllerId") != null && _node.GetProperty("paymentControllerId").Value != "")
+            {
+                foreach (PaymentController paymentController in Helper.getCatalog().getEnabledPaymentControllers())
+                {
+                    if (paymentController.id == _node.GetProperty("paymentControllerId").Value)
+                    {
+                        cart.paymentController = paymentController;
+                        break;
+                    }
+                }
+            }
+
+
+            /// Setting the status should be done last
+            if (_node.GetProperty("status") != null)
+            {
+                foreach (Cart.Status status in System.Enum.GetValues(typeof(Cart.Status)))
+                {
+                    if (status.ToString() == _node.GetProperty("status").Value)
+                    {
+                        _cart.status = status;
                     }
                 }
             }

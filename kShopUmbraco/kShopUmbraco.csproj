@@ -56,11 +56,17 @@
       <HintPath>..\foreignDlls\Umbraco.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="umbraco.MacroEngines">
+      <HintPath>..\foreignDlls\umbraco.MacroEngines.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CartManagerUmbraco.cs" />
     <Compile Include="CatalogManagerUmbraco.cs" />
     <Compile Include="CategoryManagerUmbraco.cs" />
+    <Compile Include="Helper.cs" />
+    <Compile Include="PaymentControllerManagerUmbraco.cs" />
     <Compile Include="ProductManagerUmbraco.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -80,10 +86,14 @@
     <None Include="installscript\settings.bat" />
     <None Include="macroScripts\Catalog.cshtml" />
     <None Include="macroScripts\Category.cshtml" />
+    <None Include="macroScripts\PaymentResponse.cshtml" />
     <None Include="macroScripts\Product.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="macroScripts\Cart.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="macroScripts\OrderProcessing.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

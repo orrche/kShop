@@ -4,59 +4,13 @@
 @using System.IO;
 	
 @using System.Reflection;
-
+@using umbraco.MacroEngines;
 
 <h3>Din kundvagn</h3>
 @{		
 	Cart cart = new Cart(new CartManagerUmbraco());
-    
-    if (HttpContext.Current.Request.Form["Order"] != null)
-    {
-        PaymentProvider paymentProvider = null;
-        Assembly test1 = Assembly.LoadFrom(@"C:\inetpub\wwwroot\someshop\bin\dommyPaymentHandler.dll");
-    
-        foreach( Type type in test1.GetTypes() )
-        {
-            foreach( Type inter in type.GetInterfaces())
-            {
-                if (inter == (typeof(PaymentProvider)))
-                {
-                    paymentProvider = (PaymentProvider) Activator.CreateInstance(type);
-                }
-            }
-        }
-        
-        
-        if ( paymentProvider != null )
-        {
-            <span>Name of provider: @paymentProvider.getName()</span>
-        }
-    }
-            
-    
-    if (HttpContext.Current.Request.Form["Order"] != null)
-    {
-        PaymentProvider paymentProvider = null;
-        Assembly test1 = Assembly.LoadFrom(@"C:\inetpub\wwwroot\someshop\bin\dommyPaymentHandler.dll");
-    
-        foreach( Type type in test1.GetTypes() )
-        {
-            foreach( Type inter in type.GetInterfaces())
-            {
-                if (inter == (typeof(PaymentProvider)))
-                {
-                    paymentProvider = (PaymentProvider) Activator.CreateInstance(type);
-                }
-            }
-        }
-        
-        
-        if ( paymentProvider != null )
-        {
-            <span>Name of provider: @paymentProvider.getName()</span>
-        }
-    }
-            
+    Catalog catalog = kShopUmbraco.Helper.getCatalog();
+      
     
 	
 	<form method="post">
@@ -88,7 +42,16 @@
 
 	<input type="submit" value="Update" name="updateCart" />
 	</form>
-	<form method="post">
+	<form method="post" action="/orderprocessing.aspx">
+		<select name="paymentProvider">
+		@{
+            
+			foreach ( PaymentController paymentController in catalog.getEnabledPaymentControllers() )
+			{
+				<option value="@paymentController.id">@paymentController.paymentProvider.getName()</option>
+			}
+		}
+		</select>
 		<input type="submit" value="Order" name="Order" />
 	</form>
 	<form method="post">

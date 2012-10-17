@@ -1,6 +1,8 @@
 ﻿@using kShop; 
 @using kShopUmbraco;
 @using umbraco.NodeFactory;
+@using System.Reflection;
+@using dummyPaymentHandler;
 
 
 @{
@@ -16,15 +18,5 @@
 		{
 			<a href="@CategoryManagerUmbraco.getFrom(child).getNode().NiceUrl">@child.title</a><br />
 		}
-	}
-    
-    if ( catalog.getAvailablePaymentProviders().Count > 0 )
-    {
-        <h2>PaymentProviders</h2>   
-        foreach ( PaymentProvider paymentProvider in catalog.getAvailablePaymentProviders() )
-        {
-            <span>Payment Provider @paymentProvider.getName()</span><br />
-        }
-    }
-    
+	}    
 }

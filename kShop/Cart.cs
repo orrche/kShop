@@ -8,19 +8,36 @@ namespace kShop
 {
     public class Cart
     {
+        public enum Status
+        {
+            incompleat,
+            pending,
+            paid,
+            compleated
+        };
+
+        Cart.Status _status = Status.incompleat;
+
         List<CartedProduct> _products = new List<CartedProduct>();
         List<CartManager> _managers = new List<CartManager>();
+        PaymentController _paymentController = null;
 
         bool filled = false;
 
         public Cart(CartManager manager)
         {
             _managers.Add(manager);
+            fill();
 
         }
 
         public void addProduct(Product product, int quantity)
         {
+            if (status != Status.incompleat)
+            {
+                throw new Exception("Can't add products to cart thats not in incompleat state");
+            }
+
             bool found = false;
             foreach (CartedProduct cProduct in _products)
             {
@@ -55,8 +72,17 @@ namespace kShop
 
         }
 
+        /// <summary>
+        /// The cart needs to be in incompleat state or this will not work
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="quantity"></param>
         public void setQuantity(string productId, int quantity)
         {
+            if (status != Status.incompleat)
+            {
+                throw new Exception("Can't add products to cart thats not in incompleat state");
+            }
             fill();
             CartedProduct foundProduct = null;
             foreach (CartedProduct cProduct in _products)
@@ -87,6 +113,39 @@ namespace kShop
         public void addProduct(Product product)
         {
             addProduct(product, 1);            
+        }
+
+        public Status status
+        {
+            get
+            {
+                fill();
+                return _status;
+            }
+            set
+            {
+                _status = value;
+            }
+        }
+
+        /// <summary>
+        /// Setting this to something other then null will change the status from incompleat to pending
+        /// </summary>
+        public PaymentController paymentController
+        {
+            get
+            {
+                fill();
+                return _paymentController;
+            }
+            set
+            {
+                if (value != null && status == Status.incompleat)
+                {
+                    status = Status.pending;
+                }
+                _paymentController = value; 
+            }
         }
 
         public List<CartedProduct> products
