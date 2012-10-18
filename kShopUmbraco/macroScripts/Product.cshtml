@@ -16,17 +16,8 @@
 		CartManagerUmbraco.getFrom(cart).save();
 	}
 	
-	<h1>@product.title</h1>;
+	<h1>@product.title [@product.price]</h1>;
 	
-	foreach ( Product child in product.products ) 
-	{
-		<a href="@ProductManagerUmbraco.getFrom(child).getNode().NiceUrl">@child.title</a><br />
-	}
-	
-	if ( product.products.Count == 0 )
-	{
-		@Html.Raw("&nbsp;");
-	}
 	<form method="post">
 		<input type="submit" name="addProduct" value="addProduct" />
 	</form>
@@ -37,7 +28,7 @@
 		<h2>Products</h2>
 		foreach ( Product child in product.products ) 
 		{
-			<a href="@ProductManagerUmbraco.getFrom(child).getNode().NiceUrl">@child.title</a><br />
+			<a href="@ProductManagerUmbraco.getFrom(child).getNode().NiceUrl">@child.title [@child.getFromPrice()]</a><br />
 		}
 	}
 }

@@ -22,6 +22,15 @@ namespace kShop
         List<CartManager> _managers = new List<CartManager>();
         PaymentController _paymentController = null;
 
+        string _firstname;
+        string _lastname;
+        string _address;
+        string _street;
+        string _zipCode;
+        string _city;
+        string _email;
+        string _phone;
+
         bool filled = false;
 
         public Cart(CartManager manager)
@@ -79,11 +88,11 @@ namespace kShop
         /// <param name="quantity"></param>
         public void setQuantity(string productId, int quantity)
         {
-            if (status != Status.incompleat)
+            fill();
+            if (status != Status.incompleat && false)
             {
                 throw new Exception("Can't add products to cart thats not in incompleat state");
             }
-            fill();
             CartedProduct foundProduct = null;
             foreach (CartedProduct cProduct in _products)
             {
@@ -115,6 +124,113 @@ namespace kShop
             addProduct(product, 1);            
         }
 
+        public string firstname
+        {
+            get
+            {
+                fill();
+                return _firstname;
+            }
+            set
+            {
+                _firstname = value;
+            }
+        }
+
+        public string lastname
+        {
+            get
+            {
+                fill();
+                return _lastname;
+            }
+            set
+            {
+                _lastname = value;
+            }
+        }
+
+        public string address
+        {
+            get
+            {
+                fill();
+                return _address;
+            }
+            set
+            {
+                _address = value;
+            }
+        }
+
+        public string street
+        {
+            get
+            {
+                fill();
+                return _street;
+            }
+            set
+            {
+                _street = value;
+            }
+        }
+
+        public string zipCode
+        {
+            get
+            {
+                fill();
+                return _zipCode;
+            }
+            set
+            {
+                _zipCode = value;
+            }
+        }
+
+        public string city
+        {
+            get
+            {
+                fill();
+                return _city;
+            }
+            set
+            {
+                _city = value;
+            }
+        }
+
+        public string email
+        {
+            get
+            {
+                fill();
+                return _email;
+            }
+            set
+            {
+                _email = value;
+            }
+        }
+
+        
+        public string phone
+        {
+            get
+            {
+                fill();
+                return _phone;
+            }
+            set
+            {
+                _phone = value;
+            }
+        }
+
+
+
         public Status status
         {
             get
@@ -142,7 +258,7 @@ namespace kShop
             {
                 if (value != null && status == Status.incompleat)
                 {
-                    status = Status.pending;
+                    //status = Status.pending;
                 }
                 _paymentController = value; 
             }

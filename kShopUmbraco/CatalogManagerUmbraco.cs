@@ -55,9 +55,9 @@ namespace kShopUmbraco
         /// </summary>
         /// <param name="service"></param>
         /// <returns></returns>
-        public static CategoryManagerUmbraco getFrom(Category category)
+        public static CatalogManagerUmbraco getFrom(Catalog catalog)
         {
-            return (CategoryManagerUmbraco)category.getManager(typeof(CategoryManagerUmbraco));
+            return (CatalogManagerUmbraco)catalog.getManager(typeof(CatalogManagerUmbraco));
         }
 
         /// <summary>

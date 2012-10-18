@@ -22,6 +22,6 @@
 	<h2>Products</h2>
 	foreach ( Product product in category.products ) 
 	{
-		<a href="@ProductManagerUmbraco.getFrom(product).getNode().NiceUrl">@product.title</a><br />
+		<a href="@ProductManagerUmbraco.getFrom(product).getNode().NiceUrl">@product.title [@(product.products.Count > 0 ? "from ":"")@product.getFromPrice() kr]</a><br />
 	}
 }

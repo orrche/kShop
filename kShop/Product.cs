@@ -34,6 +34,21 @@ namespace kShop
             }
         }
 
+        public decimal getFromPrice()
+        {
+            decimal ret = price;
+
+            foreach (Product product in _products)
+            {
+                decimal subFromPrice = product.getFromPrice();
+                if (subFromPrice < ret || ret == 0)
+                {
+                    ret = subFromPrice;
+                }
+            }
+
+            return ret;
+        }
 
         public List<Product> products
         {

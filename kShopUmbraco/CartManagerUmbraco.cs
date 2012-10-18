@@ -63,6 +63,17 @@ namespace kShopUmbraco
                         _cart.setQuantity(key.Substring(9), Convert.ToInt32(HttpContext.Current.Request.Form[key]));
                     }
                 }
+
+                
+                foreach (string prop in new string[] { "email", "firstname", "lastname", "address", "street", "zipCode", "city", "phone" })
+                {
+                    if (HttpContext.Current.Request.Form[prop] != null)
+                    {
+                        typeof(Cart).GetProperty(prop).SetValue(_cart, HttpContext.Current.Request.Form[prop], null);
+                    }
+                }
+                
+
                 CartManagerUmbraco.getFrom(_cart).save();
             }
 
@@ -79,6 +90,8 @@ namespace kShopUmbraco
         {
             
             User user = User.GetUser(0);
+            Catalog catalog = Helper.getCatalog();
+
             Document _doc;
             if (_node == null || _node.Id == 0)
             {
@@ -113,12 +126,37 @@ namespace kShopUmbraco
             {
                 _doc.getProperty("paymentControllerId").Value = _cart.paymentController.id;
             }
+
+            
+            foreach ( string prop in new string[] {"email", "firstname", "lastname", "address", "street", "zipCode", "city", "phone" } )
+            {
+                if (_doc.getProperty(prop) != null)
+                {
+                    _doc.getProperty(prop).Value = typeof(Cart).GetProperty(prop).GetValue(_cart, null);
+                }
+            }
+
             if (_doc.getProperty("status") != null)
             {
                 _doc.getProperty("status").Value = _cart.status.ToString();
+            }           
+
+            if ( _cart.status == Cart.Status.incompleat )
+            {
+                _doc.Move( Convert.ToInt32(CatalogManagerUmbraco.getFrom(catalog).getNode().GetProperty("incompleatOrders").Value));
             }
-            _doc.SendToPublication(user);
+            else if (_cart.status == Cart.Status.pending)
+            {
+                _doc.Move(Convert.ToInt32(CatalogManagerUmbraco.getFrom(catalog).getNode().GetProperty("pendingOrders").Value));
+            }
+            else if (_cart.status == Cart.Status.paid)
+            {
+                _doc.Move(Convert.ToInt32(CatalogManagerUmbraco.getFrom(catalog).getNode().GetProperty("paidOrders").Value));
+            }
+
+            //_doc.SendToPublication(user);
             _doc.Publish(user);
+            
            
             // This doesn't seam to work right ... for some reason..
             umbraco.library.UpdateDocumentCache(_doc.Id);
@@ -163,6 +201,15 @@ namespace kShopUmbraco
                 }
             }
 
+            
+            foreach (string prop in new string[] { "firstname", "email", "lastname", "address", "street", "zipCode", "city", "phone" })
+            {
+                if (_node.GetProperty(prop) != null)
+                {
+                    typeof(Cart).GetProperty(prop).SetValue(_cart, _node.GetProperty(prop).Value, null);
+                }
+            }
+
             if (_node.GetProperty("paymentControllerId") != null && _node.GetProperty("paymentControllerId").Value != "")
             {
                 foreach (PaymentController paymentController in Helper.getCatalog().getEnabledPaymentControllers())
@@ -175,7 +222,7 @@ namespace kShopUmbraco
                 }
             }
 
-
+            
             /// Setting the status should be done last
             if (_node.GetProperty("status") != null)
             {

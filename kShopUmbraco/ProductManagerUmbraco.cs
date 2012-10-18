@@ -45,9 +45,9 @@ namespace kShopUmbraco
                 }
             }
 
-            foreach (Document child in _doc.Children)
+            foreach (Node child in _doc.Children)
             {
-                if (child.ContentType.Alias == "kShopProduct")
+                if (child.NodeTypeAlias == "kShopProduct")
                 {
                     product.products.Add(new Product(new ProductManagerUmbraco(child.Id)));
                 }

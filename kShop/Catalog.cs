@@ -96,11 +96,11 @@ namespace kShop
                 foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
                 {
 
-                    if (assembly.IsDynamic == false && controller.dll != null && assembly.Location.EndsWith(controller.dll))
+                    //if (assembly.IsDynamic == false && controller.dll != null && assembly.Location.EndsWith(controller.dll))
                     {
                         foreach (Type type in assembly.GetTypes())
                         {
-                            if (type.Namespace == controller.pluginNamespace && type.Name == controller.pluginClass)
+                            if ((type.Namespace == controller.pluginNamespace || true )  && type.Name == controller.pluginClass)
                             {
                                 foreach (Type inter in type.GetInterfaces())
                                 {
@@ -142,8 +142,8 @@ namespace kShop
                     {
                         if (inter == (typeof(PaymentProvider)))
                         {
-                            
-                            PaymentProvider paymentProvider = (PaymentProvider)Activator.CreateInstance(type);
+
+                            PaymentProvider paymentProvider = (PaymentProvider)Activator.CreateInstance(type, new object[] { paymentHandlerControllers[0] });
                             if (paymentProvider.list())
                             {
                                 ret.Add(paymentProvider);

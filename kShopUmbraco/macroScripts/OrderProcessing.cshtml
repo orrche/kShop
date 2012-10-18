@@ -19,6 +19,7 @@
 			{
 				<span>Selected provider: @paymentController.paymentProvider.getName()</span>
 				cart.paymentController = paymentController;
+				cart.status = Cart.Status.pending;
 				CartManagerUmbraco.getFrom(cart).save();
 			}
 		}
