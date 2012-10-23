@@ -40,27 +40,36 @@
 		</tr>
 	</table>
 	
-	Firstname<input name="firstname" value="@cart.firstname" /><br/>
-	Lastname<input name="lastname" value="@cart.lastname" /><br/>
-	Street<input name="street" value="@cart.street" /><br/>
-	ZipCode<input name="zipcode" value="@cart.zipCode"/><br/>
-	City<input name="city" value="@cart.city" /><br/>
-	Email<input name="email" value="@cart.email"/><br/>
-	Phone<input name="phone" value="@cart.phone" /><br/>
+	<div class="cartInputLabel">Firstname</div><input name="firstname" value="@cart.firstname" /><br/>
+	<div class="cartInputLabel">Lastname</div><input name="lastname" value="@cart.lastname" /><br/>
+	<div class="cartInputLabel">Street</div><input name="street" value="@cart.street" /><br/>
+	<div class="cartInputLabel">ZipCode</div><input name="zipcode" value="@cart.zipCode"/><br/>
+	<div class="cartInputLabel">City</div><input name="city" value="@cart.city" /><br/>
+	<div class="cartInputLabel">Email</div><input name="email" value="@cart.email"/><br/>
+	<div class="cartInputLabel">Phone</div><input name="phone" value="@cart.phone" /><br/>
 
-	<input type="submit" value="Update" name="updateCart" />
-	</form>
-	<form method="post" action="/orderprocessing.aspx">
+	
+
 		<select name="paymentProvider">
 		@{
             
+			<option value="">Select payment provider</option>
 			foreach ( PaymentController paymentController in catalog.getEnabledPaymentControllers() )
 			{
-				<option value="@paymentController.id">@paymentController.paymentProvider.getName()</option>
+				string selected = "";
+				if ( cart.paymentController != null && cart.paymentController.id == paymentController.id )
+				{
+					selected = " selected";
+				}
+				else
+				{
+					selected = "";
+				}
+				<option value="@paymentController.id"@selected>@paymentController.paymentProvider.getName()</option>
 			}
 		}
 		</select>
-		<input type="submit" value="Order" name="Order" />
+		<input type="submit" value="Update" name="updateCart" /> <input type="submit" value="Order" name="Order" />
 	</form>
 	<form method="post">
 		<input type="submit" value="clearCart" name="clearCart" />

@@ -1,0 +1,38 @@
+﻿
+@using kShop;
+@using kShopUmbraco;
+@using System.IO;
+	
+@using System.Reflection;
+@using umbraco.MacroEngines;
+
+@{
+	Cart cart = new Cart(new CartManagerUmbraco(@Parameter.orderNodeId));
+    Catalog catalog = kShopUmbraco.Helper.getCatalog();
+    
+	<table>
+		<tr>
+			<td>Artikel</td><td>Antal</td><td>á-pris</td><td></td>
+		</tr>
+		@foreach ( CartedProduct child in cart.products ) 
+		{
+			<tr>
+				<td>
+					<a href="@ProductManagerUmbraco.getFrom(child.product).getNode().NiceUrl">@child.product.title</a>
+				</td>
+				<td>
+					@child.quantity
+				</td>
+				<td>
+					@child.product.price
+				</td>
+				<td>
+					@(child.product.price * child.quantity)
+				</td>
+			</tr>
+		}
+		<tr>
+			<td></td><td></td><td>Summa:</td><td>@cart.getSum() </td>
+		</tr>
+	</table>
+}

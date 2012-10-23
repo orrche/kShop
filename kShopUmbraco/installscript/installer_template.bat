@@ -9,3 +9,4 @@ REM xcopy /Y /M "%TargetDir%images\*" "%UMBRACOPATH%images\"
 
 xcopy /Y /M "%TargetDir%bin\Debug\*dll" "%UMBRACOPATH%bin\"
 xcopy /Y /M "%TargetDir%macroScripts\*cshtml" "%UMBRACOPATH%macroScripts\"
+xcopy /Y /M "%TargetDir%css\*css" "%UMBRACOPATH%css\"

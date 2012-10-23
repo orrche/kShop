@@ -11,6 +11,7 @@ using umbraco.cms.businesslogic.web;
 using System.Web;
 using umbraco.BusinessLogic;
 using umbraco.NodeFactory;
+using System.Xml.Linq;
 
 
 namespace kShopUmbraco
@@ -41,14 +42,23 @@ namespace kShopUmbraco
             }
         }
 
+        public CartManagerUmbraco(string strId)
+        {
+            int id = Convert.ToInt32(strId);
+            _node = new Node(id);
+        }
+
         public void HandleResponse()
         {
+            Catalog catalog = Helper.getCatalog();
+
             if (_cart.paymentController.paymentProvider.responseHandler(HttpContext.Current, _cart))
             {
-                _cart.status = Cart.Status.paid;
-
-
+                _cart.paid();
                 save();
+
+                Node emailNode = new Node(Convert.ToInt32(CatalogManagerUmbraco.getFrom(catalog).getNode().GetProperty("confirmationEmail").Value));
+                umbraco.library.SendMail(emailNode.GetProperty("sourceEmail").Value, _cart.email, emailNode.GetProperty("subject").Value, umbraco.library.RenderMacroContent("<?UMBRACO_MACRO orderNodeId=\"" + CartManagerUmbraco.getFrom(_cart).getNode().Id + "\" macroAlias=\"" + emailNode.GetProperty("contentMacro").Value + "\" />", emailNode.Id), true);
             }
         }
 
@@ -56,6 +66,8 @@ namespace kShopUmbraco
         {
             if (HttpContext.Current.Request.Form["updateCart"] != null)
             {
+                Catalog catalog = kShopUmbraco.Helper.getCatalog();
+
                 foreach (string key in HttpContext.Current.Request.Form.Keys)
                 {
                     if (key.StartsWith("quantity_"))
@@ -73,6 +85,15 @@ namespace kShopUmbraco
                     }
                 }
                 
+		        foreach ( PaymentController paymentController in catalog.getEnabledPaymentControllers() )
+		        {
+			        if ( paymentController.id == HttpContext.Current.Request.Form["paymentProvider"] )
+			        {
+				        _cart.paymentController = paymentController;
+				        _cart.status = Cart.Status.pending;
+				        CartManagerUmbraco.getFrom(_cart).save();
+			        }
+		        }
 
                 CartManagerUmbraco.getFrom(_cart).save();
             }
@@ -128,7 +149,7 @@ namespace kShopUmbraco
             }
 
             
-            foreach ( string prop in new string[] {"email", "firstname", "lastname", "address", "street", "zipCode", "city", "phone" } )
+            foreach ( string prop in new string[] {"email", "firstname", "lastname", "address", "street", "zipCode", "city", "phone", "receipt" } )
             {
                 if (_doc.getProperty(prop) != null)
                 {
@@ -153,6 +174,9 @@ namespace kShopUmbraco
             {
                 _doc.Move(Convert.ToInt32(CatalogManagerUmbraco.getFrom(catalog).getNode().GetProperty("paidOrders").Value));
             }
+
+            XDocument x;
+            from item in x.Nodes (
 
             //_doc.SendToPublication(user);
             _doc.Publish(user);

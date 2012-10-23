@@ -91,12 +91,16 @@
     <None Include="macroScripts\Category.cshtml" />
     <None Include="macroScripts\PaymentResponse.cshtml" />
     <None Include="macroScripts\Product.cshtml" />
+    <None Include="macroScripts\Receipt.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="macroScripts\Cart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="macroScripts\OrderProcessing.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="css\cart.css" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

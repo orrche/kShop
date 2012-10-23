@@ -10,9 +10,25 @@ namespace kShop
     {
         public enum Status
         {
+            /// <summary>
+            /// Cart is in an incompleate state, i.e. the user hasn't confirmed it yet
+            /// </summary>
             incompleat,
+            /// <summary>
+            /// The cart is locked for futher additions to the cart, this means that the user has pressed the order button.
+            /// </summary>
             pending,
+            /// <summary>
+            /// The cart is in a confirmed but not yet paid state, this might happen if payment in reality is selected or in any other way that can't be automaticly confirmed
+            /// </summary>
+            confirmed,
+            /// <summary>
+            /// The order is paid 
+            /// </summary>
             paid,
+            /// <summary>
+            /// The order is acknowledged by the shop owner.
+            /// </summary>
             compleated
         };
 
@@ -30,6 +46,8 @@ namespace kShop
         string _city;
         string _email;
         string _phone;
+
+        string _receipt;
 
         bool filled = false;
 
@@ -80,6 +98,23 @@ namespace kShop
             return ret;
 
         }
+        public void paid()
+        {
+            _status = Status.paid;
+            createReceipt();
+
+        }
+        public void createReceipt()
+        {
+            decimal sum = 0;
+            foreach (CartedProduct cProduct in products)
+            {
+                _receipt += cProduct.product.title + "\t" + cProduct.product.price + "\t" + cProduct.quantity + "\t" + (cProduct.product.price * cProduct.quantity) + "\n";
+                sum += cProduct.product.price * cProduct.quantity;
+            }
+
+            _receipt += " Sum: " + sum;
+        }
 
         /// <summary>
         /// The cart needs to be in incompleat state or this will not work
@@ -124,6 +159,19 @@ namespace kShop
             addProduct(product, 1);            
         }
 
+        public string receipt
+        {
+            get
+            {
+                fill();
+                return _receipt;
+            }
+            set
+            {
+                _receipt = value;
+            }
+        }
+       
         public string firstname
         {
             get
