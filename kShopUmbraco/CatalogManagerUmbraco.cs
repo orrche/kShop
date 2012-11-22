@@ -41,13 +41,17 @@ namespace kShopUmbraco
                 {
                     catalog.categories.Add(new Category(new CategoryManagerUmbraco(child.Id)));
                 }
-                else if ( child.NodeTypeAlias == "kShopPaymentHandlerController")
+                else if (child.NodeTypeAlias == "kShopPaymentHandlerControllerContainer")
                 {
-                    catalog.paymentHandlerControllers.Add(new PaymentController(new PaymentControllerManagerUmbraco(child.Id)));
+                    foreach (Node controller in child.Children)
+                    {
+                        if (controller.NodeTypeAlias == "kShopPaymentHandlerController")
+                        {
+                            catalog.paymentHandlerControllers.Add(new PaymentController(new PaymentControllerManagerUmbraco(controller.Id)));
+                        }
+                    }
                 }
             }
-
-
         }
 
         /// <summary>
