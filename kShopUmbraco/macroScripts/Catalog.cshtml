@@ -6,7 +6,7 @@
 
 
 @{
-	Catalog catalog = new Catalog(new CatalogManagerUmbraco(@Model.Id));	
+    Catalog catalog = kShopUmbraco.Helper.getCatalog();
 	
 	
 	<h1>@catalog.title</h1>;
