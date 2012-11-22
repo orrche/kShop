@@ -175,8 +175,6 @@ namespace kShopUmbraco
                 _doc.Move(Convert.ToInt32(CatalogManagerUmbraco.getFrom(catalog).getNode().GetProperty("paidOrders").Value));
             }
 
-            XDocument x;
-            from item in x.Nodes (
 
             //_doc.SendToPublication(user);
             _doc.Publish(user);
