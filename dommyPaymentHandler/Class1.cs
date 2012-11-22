@@ -49,6 +49,7 @@ namespace dummyPaymentHandler
         {
             if (context.Request.Params["resp"] == "accept")
             {
+                cart.paid();
                 return true;
             }
             return false;
