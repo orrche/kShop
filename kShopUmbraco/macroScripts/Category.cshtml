@@ -4,7 +4,11 @@
 
 
 @{
-	<a href="@((new Node(@Model.Up().Id)).NiceUrl)">Up</a>
+	if ( @Model.Up() != null )
+	{
+		<a href="@((new Node(@Model.Up().Id)).NiceUrl)">Up</a>
+	}
+
 	Category category = new Category(new CategoryManagerUmbraco(@Model.Id));	
 	
 	
